@@ -482,5 +482,4 @@ For issues or questions, please create an issue in the repository.
 ---
 
 **Happy Freelancing! 🎉**
-#   F r e e l a n c e H u b  
- 
+#
