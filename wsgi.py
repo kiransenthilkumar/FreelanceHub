@@ -1,6 +1,11 @@
+import os
+from dotenv import load_dotenv
 from app import create_app, db
 
-app = create_app()
+# Load environment variables
+load_dotenv()
+
+app = create_app(os.environ.get('FLASK_ENV', 'production'))
 
 if __name__ == "__main__":
     with app.app_context():
