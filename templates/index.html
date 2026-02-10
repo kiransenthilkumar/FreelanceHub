@@ -1,0 +1,722 @@
+{% extends "base.html" %}
+
+{% block title %}Hire Skilled Freelancers. Get Work Done Faster — FreelanceHub{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hero-gradient {
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 50%, #003d99 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero-gradient::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(0, 102, 255, 0.2) 0%, transparent 70%);
+    animation: pulse 15s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 10;
+  }
+  
+  .fade-in-up {
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+  
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+  }
+  
+  .step-number {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 25px rgba(0, 102, 255, 0.3);
+  }
+  
+  .feature-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .stat-box {
+    background: linear-gradient(135deg, rgba(0, 102, 255, 0.1) 0%, rgba(0, 82, 204, 0.1) 100%);
+    border-left: 4px solid #0066ff;
+  }
+  
+  .testimonial-card {
+    border-left: 4px solid #0066ff;
+    position: relative;
+  }
+  
+  .testimonial-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    font-size: 60px;
+    color: #0066ff;
+    opacity: 0.3;
+  }
+  
+  .faq-item {
+    border-bottom: 1px solid #e5e7eb;
+    padding: 20px 0;
+  }
+  
+  .faq-item:last-child {
+    border-bottom: none;
+  }
+  
+  .faq-item summary {
+    cursor: pointer;
+    user-select: none;
+    font-weight: 600;
+    color: #1f2937;
+    padding: 10px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .faq-item summary:hover {
+    color: #0066ff;
+  }
+  
+  .faq-item summary::before {
+    content: '+';
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    margin-right: 15px;
+    background: #0066ff;
+    color: white;
+    text-align: center;
+    line-height: 24px;
+    border-radius: 50%;
+    font-weight: 300;
+    font-size: 20px;
+  }
+  
+  .faq-item[open] summary::before {
+    content: '−';
+  }
+  
+  .badge-gradient {
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .cta-button-primary {
+    background: linear-gradient(135deg, #0066ff 0%, #0052cc 100%);
+    transition: all 0.3s ease;
+  }
+  
+  .cta-button-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(0, 102, 255, 0.5);
+  }
+  
+  .skill-tag {
+    background: #f3f4f6;
+    color: #0066ff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .hero-box {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section id="home" class="hero-gradient text-white py-16 -mt-10">
+  <div class="container mx-auto px-4">
+    <div class="grid md:grid-cols-2 gap-16 items-center">
+      <!-- Left Content -->
+      <div class="hero-content fade-in-up">
+        <div class="mb-8 inline-block">
+          <span class="bg-blue-100 text-blue-700 px-5 py-3 rounded-full text-sm font-bold">🚀 Welcome to FreelanceHub</span>
+        </div>
+        
+        <h1 class="text-5xl md:text-7xl font-black leading-tight mb-8">Hire Skilled Freelancers.<br/>Get Work Done Faster.</h1>
+        
+        <p class="text-lg md:text-xl text-blue-50 mb-12 max-w-lg leading-relaxed">A trusted freelancing platform to connect clients with verified freelancers for fast, secure, and affordable work. Start your project today and see results within days.</p>
+        
+        <!-- CTAs -->
+        <div class="flex flex-col sm:flex-row gap-5 mb-12">
+          <a href="{{ url_for('post_job') }}" class="cta-button-primary text-white px-10 py-4 rounded-xl font-bold text-lg text-center inline-flex items-center justify-center gap-2 hover:shadow-2xl shadow-lg">
+            <i class="fas fa-plus"></i> Post a Job
+          </a>
+          <a href="{{ url_for('browse_jobs') }}" class="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold text-lg text-center inline-flex items-center justify-center gap-2 hover:bg-blue-50 transition shadow-lg">
+            <i class="fas fa-briefcase"></i> Hire Freelancers
+          </a>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="flex flex-wrap gap-6 text-sm font-semibold">
+          <div class="flex items-center gap-2"><i class="fas fa-check-circle text-yellow-300 text-lg"></i> Secure Payments</div>
+          <div class="flex items-center gap-2"><i class="fas fa-check-circle text-yellow-300 text-lg"></i> Verified Users</div>
+          <div class="flex items-center gap-2"><i class="fas fa-check-circle text-yellow-300 text-lg"></i> 24/7 Support</div>
+        </div>
+      </div>
+      
+      <!-- Right Visual - Stats Cards -->
+      <div class="hidden md:block relative">
+        <div class="space-y-6">
+          <!-- Card 1 -->
+          <div class="hero-box rounded-2xl p-8 text-white hover:scale-105 transition transform hover:shadow-2xl">
+            <div class="flex items-center gap-6">
+              <div class="text-5xl"><i class="fas fa-users"></i></div>
+              <div>
+                <div class="text-5xl font-black">5K+</div>
+                <div class="text-blue-100 text-lg">Verified<br/>Freelancers</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 2 -->
+          <div class="hero-box rounded-2xl p-8 text-white hover:scale-105 transition transform hover:shadow-2xl ml-16">
+            <div class="flex items-center gap-6">
+              <div class="text-5xl"><i class="fas fa-briefcase"></i></div>
+              <div>
+                <div class="text-5xl font-black">1.2K+</div>
+                <div class="text-blue-100 text-lg">Jobs<br/>Completed</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Card 3 -->
+          <div class="hero-box rounded-2xl p-8 text-white hover:scale-105 transition transform hover:shadow-2xl">
+            <div class="flex items-center gap-6">
+              <div class="text-5xl"><i class="fas fa-star"></i></div>
+              <div>
+                <div class="text-5xl font-black">98%</div>
+                <div class="text-blue-100 text-lg">Client<br/>Satisfaction</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS FOR CLIENTS -->
+<section id="how-clients" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">How It Works for Clients</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">Simple, streamlined, and secure. Get your project started in minutes.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-4 gap-8">
+      <!-- Step 1 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">1</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Post Your Job</h3>
+        <p class="text-gray-600">Describe your project, set your budget, and let freelancers come to you.</p>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">2</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Receive Proposals</h3>
+        <p class="text-gray-600">Get proposals from qualified freelancers. Review their portfolios and ratings.</p>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">3</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Chat & Hire</h3>
+        <p class="text-gray-600">Discuss details with freelancers, negotiate terms, and select the best fit.</p>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">4</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Pay Securely</h3>
+        <p class="text-gray-600">Release payment after work approval. Track progress in your dashboard.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS FOR FREELANCERS -->
+<section id="how-freelancers" class="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">How It Works for Freelancers</h2>
+      <p class="text-lg text-gray-600 max-w-2xl mx-auto">Build your reputation and grow your income on your terms.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-4 gap-8">
+      <!-- Step 1 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">1</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Create Profile</h3>
+        <p class="text-gray-600">Showcase your skills, experience, and portfolio to attract clients.</p>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">2</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Browse Jobs</h3>
+        <p class="text-gray-600">Explore available projects that match your expertise and interests.</p>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">3</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Submit Bids</h3>
+        <p class="text-gray-600">Propose your services with competitive pricing and delivery timeline.</p>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="text-center card-hover p-5">
+        <div class="step-number">4</div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Get Paid</h3>
+        <p class="text-gray-600">Complete work, request payment, and get paid directly to your account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KEY FEATURES -->
+<section id="features" class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Why Choose FreelanceHub?</h2>
+      <p class="text-lg text-gray-600">Everything you need for successful freelance collaboration.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8 mb-12">
+      <!-- Feature 1 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 card-hover">
+        <div class="feature-icon text-purple-600">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Verified Freelancers</h3>
+        <p class="text-gray-600 mb-4">All freelancers are identity-verified with ratings and portfolio history visible.</p>
+        <ul class="text-sm text-gray-700 space-y-2">
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Background checks</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Rating system</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> On-time delivery tracking</li>
+        </ul>
+      </div>
+      
+      <!-- Feature 2 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 card-hover">
+        <div class="feature-icon text-blue-600">
+          <i class="fas fa-lock"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Secure Escrow Payments</h3>
+        <p class="text-gray-600 mb-4">Mock escrow-style payment system ensures safe transactions for both parties.</p>
+        <ul class="text-sm text-gray-700 space-y-2">
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Funds held until approval</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Fraud protection</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Email notifications</li>
+        </ul>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 card-hover">
+        <div class="feature-icon text-blue-600">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Project Dashboard</h3>
+        <p class="text-gray-600 mb-4">Track your projects with milestones, submissions, and real-time updates.</p>
+        <ul class="text-sm text-gray-700 space-y-2">
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Task management</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> File sharing</li>
+          <li><i class="fas fa-check text-blue-500 mr-2"></i> Progress updates</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <!-- Feature 4 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 card-hover">
+        <div class="feature-icon text-orange-600">
+          <i class="fas fa-comments"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Built-in Chat System</h3>
+        <p class="text-gray-600">Communicate directly with freelancers. No need for external email or messaging apps.</p>
+      </div>
+      
+      <!-- Feature 5 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-100 card-hover">
+        <div class="feature-icon text-red-600">
+          <i class="fas fa-star"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Review & Rating</h3>
+        <p class="text-gray-600">Leave honest reviews to help build reputation and maintain quality standards.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POPULAR CATEGORIES -->
+<section id="categories" class="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Popular Categories</h2>
+      <p class="text-lg text-gray-600">Find talent across diverse skills and industries.</p>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-code text-3xl text-blue-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">Web Development</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-mobile-alt text-3xl text-cyan-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">App Development</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-paint-brush text-3xl text-pink-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">UI/UX Design</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-image text-3xl text-purple-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">Graphic Design</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-pen-nib text-3xl text-indigo-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">Content Writing</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-search text-3xl text-teal-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">SEO & Marketing</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-database text-3xl text-yellow-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">Data Entry</h4>
+      </div>
+      <div class="bg-white p-10 rounded-lg shadow-sm border border-gray-200 card-hover text-center">
+        <i class="fas fa-film text-3xl text-red-600 mb-3"></i>
+        <h4 class="font-bold text-gray-900">Video Editing</h4>
+      </div>
+    </div>
+    
+    <div class="text-center">
+      <a href="{{ url_for('browse_jobs') }}" class="inline-block text-blue-600 font-semibold hover:text-blue-700">
+        View All Categories <i class="fas fa-arrow-right ml-2"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- TOP TALENT SHOWCASE -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Meet Our Top Freelancers</h2>
+      <p class="text-lg text-gray-600">Connect with expert freelancers ready to bring your projects to life.</p>
+    </div>
+    
+    <p class="text-center text-gray-600 py-8">Freelancer profiles will be showcased here. Browse available talent on our platform.</p>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" class="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">What Our Community Says</h2>
+      <p class="text-lg text-gray-600">Real success stories from our users.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Testimonial 1 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 testimonial-card">
+        <div class="text-yellow-400 text-sm mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-700 mb-6 font-medium">I hired a freelancer and got my project completed within 2 days. Super smooth experience! The platform is intuitive and secure.</p>
+        <div>
+          <div class="font-bold text-gray-900">Rahul K.</div>
+          <div class="text-sm text-gray-600">Startup Founder</div>
+        </div>
+      </div>
+      
+      <!-- Testimonial 2 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 testimonial-card">
+        <div class="text-yellow-400 text-sm mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-700 mb-6 font-medium">This platform helped me earn while studying. Simple, transparent, and payments are reliable. I found consistent projects here.</p>
+        <div>
+          <div class="font-bold text-gray-900">Ananya S.</div>
+          <div class="text-sm text-gray-600">Freelance Developer</div>
+        </div>
+      </div>
+      
+      <!-- Testimonial 3 -->
+      <div class="bg-white p-8 rounded-xl shadow-sm border border-gray-200 testimonial-card">
+        <div class="text-yellow-400 text-sm mb-4">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+        </div>
+        <p class="text-gray-700 mb-6 font-medium">Outstanding service with verified freelancers. The escrow system gives us peace of mind when paying for high-value projects.</p>
+        <div>
+          <div class="font-bold text-gray-900">Priya M.</div>
+          <div class="text-sm text-gray-600">Marketing Director</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECURE PAYMENTS & TRUST -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Safe. Secure. Reliable.</h2>
+      <p class="text-lg text-gray-600">Your transactions and data are protected.</p>
+    </div>
+    
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <!-- Trust Feature 1 -->
+      <div class="p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+        <i class="fas fa-shield-alt text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Mock Escrow System</h3>
+        <p class="text-gray-700">Payments are held securely and released only after you approve the completed work.</p>
+      </div>
+      
+      <!-- Trust Feature 2 -->
+      <div class="p-8 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+        <i class="fas fa-lock text-3xl text-blue-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Fraud Protection</h3>
+        <p class="text-gray-700">Our system verifies identities and monitors transactions to prevent fraudulent activity.</p>
+      </div>
+      
+      <!-- Trust Feature 3 -->
+      <div class="p-8 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+        <i class="fas fa-bell text-3xl text-purple-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">Notifications & Alerts</h3>
+        <p class="text-gray-700">Stay updated with email notifications at every step of your project lifecycle.</p>
+      </div>
+      
+      <!-- Trust Feature 4 -->
+      <div class="p-8 bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl border border-orange-200">
+        <i class="fas fa-headset text-3xl text-orange-600 mb-4"></i>
+        <h3 class="text-xl font-bold text-gray-900 mb-3">24/7 Support</h3>
+        <p class="text-gray-700">Our support team is always available to help resolve disputes and answer questions.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLATFORM STATS -->
+<section class="py-16 md:py-24 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
+  <div class="container mx-auto px-4">
+    <div class="grid md:grid-cols-4 gap-8">
+      <!-- Stat 1 -->
+      <div class="text-center">
+        <div class="text-5xl md:text-6xl font-black mb-2">5,000+</div>
+        <div class="text-lg text-gray-300">Verified Freelancers</div>
+      </div>
+      
+      <!-- Stat 2 -->
+      <div class="text-center">
+        <div class="text-5xl md:text-6xl font-black mb-2">1,200+</div>
+        <div class="text-lg text-gray-300">Jobs Completed</div>
+      </div>
+      
+      <!-- Stat 3 -->
+      <div class="text-center">
+        <div class="text-5xl md:text-6xl font-black mb-2">98%</div>
+        <div class="text-lg text-gray-300">Client Satisfaction</div>
+      </div>
+      
+      <!-- Stat 4 -->
+      <div class="text-center">
+        <div class="text-5xl md:text-6xl font-black mb-2">24/7</div>
+        <div class="text-lg text-gray-300">Customer Support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl md:text-5xl font-black text-gray-900 mb-6">Ready to Get Started?</h2>
+      <p class="text-lg text-gray-600 mb-10">Join thousands of successful freelancers and clients. Sign up free, no hidden fees.</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="{{ url_for('post_job') }}" class="cta-button-primary text-white px-10 py-4 rounded-lg font-bold text-lg">
+          <i class="fas fa-plus mr-2"></i> Post Your First Job
+        </a>
+        <a href="{{ url_for('auth_register') }}" class="border-2 border-blue-500 text-blue-600 px-10 py-4 rounded-lg font-bold text-lg hover:bg-blue-50 transition">
+          <i class="fas fa-user-plus mr-2"></i> Join as Freelancer
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section id="faqs" class="py-16 md:py-24 bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="container mx-auto px-4 max-w-3xl">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-black text-gray-900 mb-4">Frequently Asked Questions</h2>
+      <p class="text-lg text-gray-600">Have questions? We've got answers.</p>
+    </div>
+    
+    <div class="bg-white rounded-2xl shadow-md p-8 md:p-12">
+      <!-- FAQ Item 1 -->
+      <details class="faq-item">
+        <summary>Is this platform free to use?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>Yes! FreelanceHub is completely free for both clients and freelancers. There are no hidden fees or subscription charges. We offer transparent, straightforward platform access.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 2 -->
+      <details class="faq-item">
+        <summary>How does the mock payment system work?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>Payments are simulated within the system. When you confirm payment for completed work, it's marked as paid in the system. This allows you to experience the full project workflow safely in a demo environment.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 3 -->
+      <details class="faq-item">
+        <summary>How do freelancers receive their payments?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>Once you approve the freelancer's work and complete the mock payment, the payment status updates in the system. In a production environment, payments would be transferred to the freelancer's account.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 4 -->
+      <details class="faq-item">
+        <summary>What happens if there's a dispute?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>Our support team can help mediate disputes between clients and freelancers. We encourage communication through the platform's chat system. In case of conflicts, we work towards a fair resolution.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 5 -->
+      <details class="faq-item">
+        <summary>How do I know freelancers are verified?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>All freelancers on our platform undergo verification checks. You can view their profiles, ratings, completed projects, and client reviews. Verified users have a checkmark badge on their profile.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 6 -->
+      <details class="faq-item">
+        <summary>Is my data secure on this platform?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>This is a demonstration platform built for learning purposes. It uses secure practices but should not be used for production scenarios. For production use, implement proper security measures, SSL encryption, and comply with data protection regulations.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 7 -->
+      <details class="faq-item">
+        <summary>Can I cancel a project after posting?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>Yes, you can cancel an active project. If freelancers have already submitted proposals, you should communicate with them before cancellation. Be professional and considerate in your interactions.</p>
+        </div>
+      </details>
+      
+      <!-- FAQ Item 8 -->
+      <details class="faq-item">
+        <summary>What's the commission structure?</summary>
+        <div class="text-gray-600 pl-10">
+          <p>FreelanceHub operates commission-free for both clients and freelancers during this demo period. In the future, a transparent commission model may be introduced with clear terms.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER SECTION -->
+<section class="py-16 md:py-24 bg-white">
+  <div class="container mx-auto px-4 max-w-3xl">
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-8 md:p-12 text-white shadow-lg">
+      <div class="text-center">
+        <h3 class="text-2xl md:text-3xl font-black mb-4">Stay Updated</h3>
+        <p class="text-lg text-blue-100 mb-8">Get hiring tips, platform updates, and best practices delivered to your inbox.</p>
+        
+        <form class="flex flex-col sm:flex-row gap-3">
+          <input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-lg text-gray-900 placeholder-gray-500" required/>
+          <button type="submit" class="bg-white text-blue-600 px-8 py-3 rounded-lg font-bold hover:bg-gray-100 transition">
+            Subscribe
+          </button>
+        </form>
+        
+        <p class="text-sm text-blue-100 mt-4">We respect your privacy. Unsubscribe at any time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

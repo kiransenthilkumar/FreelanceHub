@@ -1,0 +1,500 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FreelanceHub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-left: 4px solid #0066ff;
+    }
+    .stat-card.primary {
+        border-left-color: #0066ff;
+    }
+    .stat-card.info {
+        border-left-color: #06b6d4;
+    }
+    .stat-card.warning {
+        border-left-color: #f59e0b;
+    }
+    .stat-card.success {
+        border-left-color: #10b981;
+    }
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .badge-open {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
+    .badge-in-progress {
+        background-color: #fef3c7;
+        color: #b45309;
+    }
+    .badge-completed {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .badge-pending {
+        background-color: #fef3c7;
+        color: #b45309;
+    }
+    .badge-paid {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .badge-rejected {
+        background-color: #fee2e2;
+        color: #7f1d1d;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #9ca3af;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-gray-600 mt-2">Manage your jobs, bids, and freelancer relationships.</p>
+    </div>
+
+    <!-- 1️⃣ DASHBOARD HEADER (OVERVIEW CARDS) -->
+    <section class="mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Jobs Posted -->
+            <div class="stat-card primary rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">📄 Jobs Posted</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ jobs_count }}</p>
+                    </div>
+                    <i class="fas fa-briefcase text-blue-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">{{ open_jobs }} open</p>
+            </div>
+
+            <!-- Total Bids -->
+            <div class="stat-card info rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">📥 Total Bids</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ bids_list|length }}</p>
+                    </div>
+                    <i class="fas fa-inbox text-cyan-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">Received on jobs</p>
+            </div>
+
+            <!-- Amount Spent -->
+            <div class="stat-card warning rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">💸 Amount Spent</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">₹{{ "%.0f"|format(spent|default(0)) }}</p>
+                    </div>
+                    <i class="fas fa-credit-card text-amber-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">On completed jobs</p>
+            </div>
+
+            <!-- Hired Freelancers -->
+            <div class="stat-card success rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">⭐ Hired Freelancers</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ hired_freelancers_count }}</p>
+                    </div>
+                    <i class="fas fa-users text-green-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">Active & completed</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2️⃣ POST JOB QUICK ACTION -->
+    <section class="mb-12">
+        <a href="{{ url_for('post_job') }}" class="block bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-8 rounded-lg shadow-md hover:shadow-xl transition">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-2xl font-bold mb-2">+ Post New Job</h3>
+                    <p class="text-blue-100">Need freelancer help? Post a job and get bids from qualified experts.</p>
+                </div>
+                <i class="fas fa-arrow-right text-3xl opacity-30"></i>
+            </div>
+        </a>
+    </section>
+
+    <!-- 3️⃣ MY JOBS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-briefcase text-blue-600"></i> My Jobs
+        </h2>
+
+        {% if jobs_with_bids %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 border-b-2 border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Job Title</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Bids</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Budget</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for job in jobs_with_bids %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <p class="font-semibold text-gray-900">{{ job.title }}</p>
+                                        <p class="text-xs text-gray-600 mt-1">Posted: {{ job.created_at.strftime('%d %b %Y') }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="inline-block bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-bold">
+                                            {{ job.bids_count }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        {% if job.status == 'open' %}
+                                            <span class="badge badge-open"><i class="fas fa-circle-notch mr-1"></i>Open</span>
+                                        {% elif job.status == 'in_progress' %}
+                                            <span class="badge badge-in-progress"><i class="fas fa-spinner mr-1"></i>In Progress</span>
+                                        {% else %}
+                                            <span class="badge badge-completed"><i class="fas fa-check-circle mr-1"></i>Completed</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <p class="font-bold text-blue-600">₹{{ "%.0f"|format(job.budget) }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{{ url_for('view_bids', job_id=job.id) }}" 
+                                           class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                            View Bids <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-briefcase text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No jobs posted yet</p>
+                    <p class="text-sm mt-2">Post your first job to start receiving bids from freelancers.</p>
+                    <a href="{{ url_for('post_job') }}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                        Post Job
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 4️⃣ BID MANAGEMENT SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-hand-paper text-blue-600"></i> Bid Management
+        </h2>
+
+        {% if bids_list %}
+            <div class="space-y-4">
+                {% for bid in bids_list %}
+                    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600 hover:shadow-lg transition">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                            <!-- Freelancer Info -->
+                            <div class="md:col-span-2">
+                                <h4 class="font-bold text-gray-900 text-lg">{{ bid.freelancer_name }}</h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    <i class="fas fa-briefcase mr-1"></i>{{ bid.job_title }}
+                                </p>
+                                <div class="flex items-center gap-1 mt-2">
+                                    {% for i in range(5) %}
+                                        {% if i < bid.rating|int %}
+                                            <i class="fas fa-star text-yellow-400 text-xs"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-gray-300 text-xs"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="text-xs text-gray-600 ml-1">{{ "%.1f"|format(bid.rating) }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Bid Amount -->
+                            <div class="text-center md:text-right">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Bid Amount</p>
+                                <p class="text-2xl font-bold text-green-600">₹{{ "%.0f"|format(bid.amount) }}</p>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="text-center md:text-right">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Status</p>
+                                {% if bid.status == 'pending' %}
+                                    <span class="badge badge-pending"><i class="fas fa-hourglass-half mr-1"></i>Pending</span>
+                                {% elif bid.status == 'accepted' %}
+                                    <span class="badge badge-paid"><i class="fas fa-check-circle mr-1"></i>Accepted</span>
+                                {% else %}
+                                    <span class="badge badge-rejected"><i class="fas fa-times-circle mr-1"></i>Rejected</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Proposal -->
+                        <div class="bg-gray-50 rounded p-3 mb-4 border-l-2 border-blue-300">
+                            <p class="text-xs text-gray-600 font-semibold mb-1">Proposal</p>
+                            <p class="text-sm text-gray-700 italic">{{ bid.proposal[:150] }}{% if bid.proposal|length > 150 %}...{% endif %}</p>
+                        </div>
+
+                        <!-- Actions -->
+                        {% if bid.status == 'pending' %}
+                            <div class="flex gap-2 justify-end">
+                                <form method="POST" action="{{ url_for('accept_bid', bid_id=bid.id) }}" style="display:inline;">
+                                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-semibold">
+                                        <i class="fas fa-check mr-1"></i>Accept
+                                    </button>
+                                </form>
+                                <a href="{{ url_for('view_bids', job_id=bid.job_id) }}" 
+                                   class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 text-sm font-semibold">
+                                    View Job
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-hand-paper text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No bids received yet</p>
+                    <p class="text-sm mt-2">Post jobs to receive bids from freelancers.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 5️⃣ ACTIVE CONTRACTS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-handshake text-blue-600"></i> Active Contracts
+        </h2>
+
+        {% if active_contracts %}
+            <div class="space-y-4">
+                {% for contract in active_contracts %}
+                    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <!-- Job & Freelancer -->
+                            <div class="md:col-span-2">
+                                <h4 class="font-bold text-gray-900">{{ contract.job_title }}</h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    <i class="fas fa-user-circle mr-1"></i>{{ contract.freelancer_name }}
+                                </p>
+                            </div>
+
+                            <!-- Work Status -->
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Work Status</p>
+                                {% if contract.work_status == 'pending' %}
+                                    <span class="text-sm font-semibold text-amber-600">⏳ Pending</span>
+                                {% elif contract.work_status == 'submitted' %}
+                                    <span class="text-sm font-semibold text-blue-600">📝 Submitted</span>
+                                {% elif contract.work_status == 'approved' %}
+                                    <span class="text-sm font-semibold text-green-600">✅ Approved</span>
+                                {% else %}
+                                    <span class="text-sm font-semibold text-gray-600">—</span>
+                                {% endif %}
+                            </div>
+
+                            <!-- Deadline -->
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Deadline</p>
+                                <p class="text-sm font-semibold text-gray-900">
+                                    {{ contract.deadline.strftime('%d %b %Y') if contract.deadline else 'N/A' }}
+                                </p>
+                            </div>
+
+                            <!-- Action -->
+                            <div class="text-right">
+                                <a href="{{ url_for('view_work', job_id=contract.job_id) }}" 
+                                   class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold">
+                                    <i class="fas fa-eye mr-1"></i>View Work
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-handshake text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No active contracts</p>
+                    <p class="text-sm mt-2">Accept a bid to start working with a freelancer.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 6️⃣ PAYMENTS & TRANSACTIONS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-money-bill-wave text-blue-600"></i> Payments & Transactions
+        </h2>
+
+        {% if payments_list %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 border-b-2 border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Job</th>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Freelancer</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Amount</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments_list %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <p class="font-semibold text-gray-900">{{ payment.job_name }}</p>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="text-gray-700">{{ payment.freelancer_name }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <p class="font-bold text-green-600">₹{{ "%.0f"|format(payment.amount) }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        {% if payment.status == 'pending' %}
+                                            <span class="badge badge-pending"><i class="fas fa-clock mr-1"></i>Pending</span>
+                                        {% elif payment.status == 'paid' %}
+                                            <span class="badge badge-paid"><i class="fas fa-check-circle mr-1"></i>Paid</span>
+                                        {% else %}
+                                            <span class="badge badge-paid"><i class="fas fa-unlock mr-1"></i>Released</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        {# Show Pay Now only when work is approved and not yet paid #}
+                                        {% if payment.status == 'paid' %}
+                                            <span class="text-green-600 font-semibold text-sm">Paid</span>
+                                        {% elif payment.status == 'pending' and payment.work_status == 'approved' %}
+                                            <a href="{{ url_for('payment_page', job_id=payment.job_id) }}" 
+                                               class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                                Pay Now <i class="fas fa-arrow-right ml-1"></i>
+                                            </a>
+                                        {% elif payment.status == 'pending' and (not payment.work_status or payment.work_status != 'approved') %}
+                                            <span class="text-yellow-600 font-semibold text-sm">Awaiting approval</span>
+                                        {% else %}
+                                            <span class="text-gray-600 text-sm">{{ payment.status|capitalize }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-wallet text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No payments yet</p>
+                    <p class="text-sm mt-2">Complete a job to make a payment to the freelancer.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 7️⃣ REVIEWS GIVEN SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-star text-blue-600"></i> Reviews Given
+        </h2>
+
+        {% if reviews_list %}
+            <div class="space-y-4">
+                {% for review in reviews_list %}
+                    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-400 hover:shadow-lg transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-bold text-gray-900">{{ review.freelancer_name }}</h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    <i class="fas fa-briefcase mr-1"></i>{{ review.job_title }}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center justify-end gap-1 mb-2">
+                                    {% for i in range(5) %}
+                                        {% if i < review.rating %}
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-gray-300"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="text-sm font-bold text-amber-600">{{ review.rating }}/5</p>
+                            </div>
+                        </div>
+
+                        {% if review.comment %}
+                            <div class="bg-yellow-50 rounded p-3 border border-yellow-200">
+                                <p class="text-sm text-gray-700 italic">
+                                    <i class="fas fa-quote-left text-yellow-400 mr-2"></i>{{ review.comment }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-star text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No reviews given yet</p>
+                    <p class="text-sm mt-2">Give reviews after completing jobs with freelancers.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- CTA Buttons -->
+    <section class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ url_for('post_job') }}" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-plus text-2xl mb-2 block"></i>
+                Post New Job
+            </a>
+            <a href="{{ url_for('my_jobs') }}" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-list text-2xl mb-2 block"></i>
+                Manage All Jobs
+            </a>
+            <a href="{{ url_for('transactions') }}" class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-history text-2xl mb-2 block"></i>
+                View Transactions
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - FreelanceHub</title>
+    <!-- Tailwind CDN for development (no Node required) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-link:hover {
+            color: #3b82f6;
+            transition: color 0.3s;
+        }
+    </style>
+    
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-blue-600">
+                <i class="fas fa-briefcase"></i> FreelanceHub
+            </a>
+            
+            <div class="flex items-center gap-6">
+                
+                
+                    
+                        <a href="/freelancer-dashboard" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                        <a href="/browse-jobs" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-search"></i> Browse Jobs
+                        </a>
+                        <a href="/my-bids" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-list"></i> My Bids
+                        </a>
+                        <a href="/transactions" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-history"></i> Transactions
+                        </a>
+                        <a href="/profile" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    
+                    
+                    <div class="border-l pl-6">
+                        <span class="text-gray-700 mr-4">Kiran (freelancer)</span>
+                        <a href="/logout" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mx-auto px-4 mt-6">
+        
+            
+        
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-1">
+        
+<div class="flex flex-col items-center justify-center h-96 text-center">
+    <h1 class="text-6xl font-bold text-gray-800 mb-4">500</h1>
+    <p class="text-2xl text-gray-600 mb-8">Internal Server Error</p>
+    <p class="text-gray-500 mb-8">Something went wrong on our end. Please try again later.</p>
+    <a href="/" class="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700">
+        Go Back Home
+    </a>
+</div>
+
+    </main>
+
+    <!-- Footer (role-aware) -->
+    <footer class="bg-gray-900 text-gray-200 mt-16 py-10">
+        <div class="container mx-auto px-6">
+            <div class="md:flex md:justify-between md:items-start gap-8">
+                <div class="mb-6 md:mb-0">
+                    <a href="/" class="flex items-center gap-3 text-xl font-bold text-white">
+                        <span class="bg-blue-600 text-white rounded-full p-2"><i class="fas fa-briefcase"></i></span>
+                        FreelanceHub
+                    </a>
+                    <p class="text-sm text-gray-300 mt-3">Connecting clients with talented freelancers worldwide.</p>
+                </div>
+
+                
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Freelancer Links</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="/browse-jobs" class="hover:text-white">Browse Jobs</a></li>
+                            <li><a href="/my-bids" class="hover:text-white">My Bids</a></li>
+                            <li><a href="/profile" class="hover:text-white">My Profile</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Support</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="hover:text-white">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white">Contact Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-sm text-gray-400">
+                <p>&copy; 2026 FreelanceHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    
+</body>
+</html>

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Payment - FreelanceHub{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="space-y-6">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-3xl font-bold mb-6">Complete Payment</h1>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <p class="text-blue-700">
+                    <i class="fas fa-info-circle"></i> This is a mock payment system for demonstration purposes.
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                {% if not job %}
+                    <div class="text-center py-12">
+                        <p class="text-gray-600">Job not found. Unable to process payment.</p>
+                    </div>
+                {% else %}
+                <div class="pb-6 border-b">
+                    <p class="text-gray-600 mb-2">Job</p>
+                    <h2 class="text-2xl font-bold">{{ job.title }}</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6 pb-6 border-b">
+                    <div>
+                        <p class="text-gray-600 text-sm">Freelancer</p>
+                        <p class="text-lg font-semibold">
+                            {% if job.accepted_bid_id %}
+                                {% set bid = job.bids|selectattr('id', 'equalto', job.accepted_bid_id)|first %}
+                                {{ bid.freelancer.name }}
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-gray-600 text-sm">Delivery Time</p>
+                        <p class="text-lg font-semibold">
+                            {% if job.accepted_bid_id %}
+                                {% set bid = job.bids|selectattr('id', 'equalto', job.accepted_bid_id)|first %}
+                                {{ bid.delivery_days }} days
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="pb-6 border-b">
+                    <p class="text-gray-600 text-sm mb-2">Payment Amount</p>
+                    <p class="text-4xl font-bold text-green-600">
+                        ₹{{ "%.2f"|format(job.budget) }}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if job %}
+            <form method="POST" action="{{ url_for('payment_page', job_id=job.id) }}" class="mt-8">
+                <button type="submit" class="w-full bg-green-600 text-white py-4 rounded-lg font-bold text-lg hover:bg-green-700">
+                    <i class="fas fa-credit-card"></i> Proceed to Payment
+                </button>
+                <p class="text-gray-500 text-sm text-center mt-4">
+                    By clicking "Proceed to Payment", you agree to pay for this work.
+                </p>
+            </form>
+            <a href="{{ url_for('job_detail', job_id=job.id) }}" class="block text-center mt-4 text-blue-600 hover:underline">
+                Back to Job
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

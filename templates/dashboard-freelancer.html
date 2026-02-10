@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - FreelanceHub{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <h1 class="text-3xl font-bold">Freelancer Dashboard</h1>
+
+    <!-- Stats Grid -->
+    <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Bids</p>
+                    <p class="text-3xl font-bold">{{ bids_count }}</p>
+                </div>
+                <div class="text-3xl text-blue-600"><i class="fas fa-comments"></i></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-sm">Accepted Bids</p>
+                    <p class="text-3xl font-bold">{{ accepted_bids }}</p>
+                </div>
+                <div class="text-3xl text-green-600"><i class="fas fa-check-circle"></i></div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-gray-600 text-sm">Total Earnings</p>
+                    <p class="text-3xl font-bold text-green-600">₹{{ "%.2f"|format(earnings|default(0)) }}</p>
+                </div>
+                <div class="text-3xl text-yellow-600"><i class="fas fa-wallet"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Jobs -->
+    {% if recent_jobs %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-4">Recent Jobs</h2>
+            <div class="space-y-3">
+                {% for job in recent_jobs %}
+                    <div class="flex justify-between items-center p-3 border-b last:border-b-0 hover:bg-gray-50">
+                        <div>
+                            <p class="font-semibold">{{ job.title }}</p>
+                            <p class="text-sm text-gray-600">{{ job.description[:60] }}...</p>
+                        </div>
+                        <a href="{{ url_for('job_detail', job_id=job.id) }}" class="text-blue-600 hover:underline">
+                            View
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Quick Actions -->
+    <div class="grid md:grid-cols-2 gap-6">
+        <a href="{{ url_for('browse_jobs') }}" class="bg-blue-600 text-white p-8 rounded-lg shadow-md hover:shadow-lg transition text-center">
+            <div class="text-3xl mb-2"><i class="fas fa-search"></i></div>
+            <h3 class="font-bold">Browse Jobs</h3>
+            <p class="text-blue-100 text-sm mt-1">Find new opportunities</p>
+        </a>
+        <a href="{{ url_for('profile') }}" class="bg-purple-600 text-white p-8 rounded-lg shadow-md hover:shadow-lg transition text-center">
+            <div class="text-3xl mb-2"><i class="fas fa-user"></i></div>
+            <h3 class="font-bold">Update Profile</h3>
+            <p class="text-purple-100 text-sm mt-1">Improve your visibility</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

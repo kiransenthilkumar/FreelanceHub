@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+
+{% block title %}Freelancer Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stat-card {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        border-left: 4px solid #0066ff;
+    }
+    .stat-card.primary {
+        border-left-color: #0066ff;
+    }
+    .stat-card.success {
+        border-left-color: #10b981;
+    }
+    .stat-card.warning {
+        border-left-color: #f59e0b;
+    }
+    .stat-card.info {
+        border-left-color: #06b6d4;
+    }
+    .profile-completion-ring {
+        width: 100px;
+        height: 100px;
+    }
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+    .badge-pending {
+        background-color: #fef3c7;
+        color: #b45309;
+    }
+    .badge-accepted {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .badge-rejected {
+        background-color: #fee2e2;
+        color: #7f1d1d;
+    }
+    .badge-paid {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+    .badge-pending-payment {
+        background-color: #fef3c7;
+        color: #b45309;
+    }
+    .badge-released {
+        background-color: #bfdbfe;
+        color: #1e40af;
+    }
+    .review-card {
+        border-left: 3px solid #fbbf24;
+        background: #fffbeb;
+    }
+    .empty-state {
+        text-align: center;
+        padding: 3rem 2rem;
+        color: #9ca3af;
+    }
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900">Dashboard</h1>
+        <p class="text-gray-600 mt-2">Welcome back! Here's your work overview.</p>
+    </div>
+
+    <!-- 1️⃣ DASHBOARD HEADER (OVERVIEW CARDS) -->
+    <section class="mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Jobs Applied -->
+            <div class="stat-card primary rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">💼 Jobs Applied</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ bids_count }}</p>
+                    </div>
+                    <i class="fas fa-chart-pie text-blue-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">Total bids placed</p>
+            </div>
+
+            <!-- Jobs Active -->
+            <div class="stat-card success rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">✅ Jobs Active</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">{{ active_jobs|length }}</p>
+                    </div>
+                    <i class="fas fa-tasks text-green-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">In progress</p>
+            </div>
+
+            <!-- Total Earnings -->
+            <div class="stat-card warning rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">💰 Total Earnings</p>
+                        <p class="text-3xl font-bold text-gray-900 mt-2">₹{{ "%.0f"|format(earnings|default(0)) }}</p>
+                    </div>
+                    <i class="fas fa-wallet text-amber-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">From paid jobs</p>
+            </div>
+
+            <!-- Average Rating -->
+            <div class="stat-card info rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">⭐ Average Rating</p>
+                        <div class="mt-2 flex items-baseline gap-2">
+                            <p class="text-3xl font-bold text-gray-900">{{ "%.1f"|format(avg_rating|default(0)) }}</p>
+                            <p class="text-xs text-gray-600">/5.0</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-star text-cyan-500 text-2xl opacity-50"></i>
+                </div>
+                <p class="text-xs text-gray-600 mt-3">From client reviews</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2️⃣ PROFILE COMPLETION CARD -->
+    <section class="mb-12">
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg shadow-md p-8 border border-blue-200">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <!-- Progress Circle -->
+                <div class="flex-shrink-0">
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                        <div class="absolute inset-0 rounded-full border-8 border-blue-100"></div>
+                        <svg class="absolute transform -rotate-90" width="128" height="128" style="overflow: visible;">
+                            <circle cx="64" cy="64" r="56" fill="none" stroke="#0066ff" stroke-width="8" 
+                                stroke-dasharray="{{ profile_completion * 3.52 }}, 352" opacity="0.9"/>
+                        </svg>
+                        <div class="text-center z-10">
+                            <p class="text-3xl font-bold text-blue-600">{{ profile_completion }}%</p>
+                            <p class="text-xs text-gray-600">Complete</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completion Info -->
+                <div class="flex-1">
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Profile Completion</h3>
+                    <p class="text-gray-600 text-sm mb-4">Complete your profile to attract more clients and get higher visibility.</p>
+                    
+                    {% if missing_items %}
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-700 mb-3">Missing items:</p>
+                            <div class="flex flex-wrap gap-2">
+                                {% for item in missing_items %}
+                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">
+                                        <i class="fas fa-times-circle mr-1"></i>{{ item }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <a href="{{ url_for('profile') }}" class="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold">
+                        <i class="fas fa-edit mr-2"></i>Complete Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3️⃣ ACTIVE JOBS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-briefcase text-blue-600"></i> Active Jobs
+        </h2>
+        
+        {% if active_jobs %}
+            <div class="space-y-4">
+                {% for job in active_jobs %}
+                    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600 hover:shadow-lg transition">
+                        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+                            <!-- Job Title & Client -->
+                            <div class="md:col-span-2">
+                                <h4 class="font-bold text-gray-900 text-lg">{{ job.title }}</h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    <i class="fas fa-user-circle mr-1"></i>{{ job.client_name }}
+                                </p>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Status</p>
+                                <span class="badge badge-accepted">
+                                    <i class="fas fa-check-circle mr-1"></i>{{ job.status|capitalize }}
+                                </span>
+                            </div>
+
+                            <!-- Deadline -->
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 uppercase font-semibold mb-1">Deadline</p>
+                                <p class="text-sm font-semibold text-gray-900">
+                                    {{ job.deadline.strftime('%d %b %Y') if job.deadline else 'N/A' }}
+                                </p>
+                            </div>
+
+                            <!-- Action -->
+                            <div class="text-right">
+                                <a href="{{ url_for('job_detail', job_id=job.id) }}" 
+                                   class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-semibold">
+                                    <i class="fas fa-arrow-right mr-1"></i>View Job
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-inbox text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No active jobs yet</p>
+                    <p class="text-sm mt-2">Start by browsing available jobs and placing bids.</p>
+                    <a href="{{ url_for('browse_jobs') }}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                        Browse Jobs
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 4️⃣ MY BIDS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-hand-paper text-blue-600"></i> Recent Bids
+        </h2>
+
+        {% if my_bids %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-100 border-b-2 border-gray-200">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase">Job Title</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Bid Amount</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Status</th>
+                                <th class="px-6 py-3 text-center text-xs font-semibold text-gray-700 uppercase">Date</th>
+                                <th class="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bid in my_bids %}
+                                <tr class="border-b border-gray-200 hover:bg-gray-50 transition">
+                                    <td class="px-6 py-4">
+                                        <p class="font-semibold text-gray-900">{{ bid.job_title }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <p class="font-bold text-green-600">₹{{ "%.0f"|format(bid.amount) }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        {% if bid.status == 'pending' %}
+                                            <span class="badge badge-pending"><i class="fas fa-hourglass-half mr-1"></i>Pending</span>
+                                        {% elif bid.status == 'accepted' %}
+                                            <span class="badge badge-accepted"><i class="fas fa-check-circle mr-1"></i>Accepted</span>
+                                        {% else %}
+                                            <span class="badge badge-rejected"><i class="fas fa-times-circle mr-1"></i>Rejected</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-center text-sm text-gray-600">
+                                        {{ bid.created_at.strftime('%d %b %y') }}
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <a href="{{ url_for('job_detail', job_id=bid.job_id) }}" 
+                                           class="text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                                            View <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-list text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No bids yet</p>
+                    <p class="text-sm mt-2">Browse jobs and place your first bid to get started.</p>
+                    <a href="{{ url_for('browse_jobs') }}" class="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm">
+                        Browse Jobs
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 5️⃣ PAYMENT STATUS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-money-bill-wave text-blue-600"></i> Payment Status
+        </h2>
+
+        {% if payment_info %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% for payment in payment_info %}
+                    <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500 hover:shadow-lg transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-bold text-gray-900">{{ payment.job_name }}</h4>
+                                <p class="text-xs text-gray-600 mt-1">Job ID: #{{ payment.job_id }}</p>
+                            </div>
+                            {% if payment.status == 'pending' %}
+                                <span class="badge badge-pending-payment"><i class="fas fa-clock mr-1"></i>Pending</span>
+                            {% elif payment.status == 'paid' %}
+                                <span class="badge badge-paid"><i class="fas fa-check-circle mr-1"></i>Paid</span>
+                            {% else %}
+                                <span class="badge badge-released"><i class="fas fa-unlock mr-1"></i>Released</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="pt-3 border-t border-gray-200">
+                            <div class="flex justify-between items-center">
+                                <span class="text-gray-600 text-sm">Amount</span>
+                                <p class="text-2xl font-bold text-green-600">₹{{ "%.0f"|format(payment.amount) }}</p>
+                            </div>
+                            <p class="text-xs text-gray-600 mt-2">{{ payment.created_at.strftime('%d %b %Y') }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-wallet text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No payments yet</p>
+                    <p class="text-sm mt-2">Complete and deliver jobs to receive payments.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- 6️⃣ REVIEWS & RATINGS SECTION -->
+    <section class="mb-12">
+        <h2 class="section-title flex items-center gap-2">
+            <i class="fas fa-star text-blue-600"></i> Client Reviews
+        </h2>
+
+        {% if reviews %}
+            <div class="space-y-4">
+                {% for review in reviews %}
+                    <div class="review-card rounded-lg shadow-md p-6 hover:shadow-lg transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h4 class="font-bold text-gray-900">{{ review.client_name }}</h4>
+                                <p class="text-xs text-gray-600 mt-1">
+                                    <i class="fas fa-briefcase mr-1"></i>{{ review.job_title }}
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <div class="flex items-center justify-end gap-1 mb-2">
+                                    {% for i in range(5) %}
+                                        {% if i < review.rating %}
+                                            <i class="fas fa-star text-yellow-400"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-gray-300"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                <p class="text-sm font-bold text-amber-600">{{ review.rating }}/5</p>
+                            </div>
+                        </div>
+
+                        {% if review.comment %}
+                            <div class="mt-4 bg-white rounded p-3 border border-yellow-200">
+                                <p class="text-sm text-gray-700 italic">
+                                    <i class="fas fa-quote-left text-yellow-400 mr-2"></i>{{ review.comment }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                <div class="empty-state">
+                    <i class="fas fa-star text-4xl mb-4"></i>
+                    <p class="text-lg font-semibold">No reviews yet</p>
+                    <p class="text-sm mt-2">Complete jobs to receive reviews and build your reputation.</p>
+                </div>
+            </div>
+        {% endif %}
+    </section>
+
+    <!-- CTA Buttons -->
+    <section class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="{{ url_for('browse_jobs') }}" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-compass text-2xl mb-2 block"></i>
+                Browse More Jobs
+            </a>
+            <a href="{{ url_for('profile') }}" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-user-edit text-2xl mb-2 block"></i>
+                Update Profile
+            </a>
+            <a href="{{ url_for('transactions') }}" class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-lg text-center hover:shadow-lg transition font-semibold">
+                <i class="fas fa-history text-2xl mb-2 block"></i>
+                View Transactions
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

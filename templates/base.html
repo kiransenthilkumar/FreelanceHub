@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FreelanceHub{% endblock %}</title>
+    <!-- Tailwind CDN for development (no Node required) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar-link:hover {
+            color: #3b82f6;
+            transition: color 0.3s;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="{{ url_for('index') }}" class="text-2xl font-bold text-blue-600">
+                <i class="fas fa-briefcase"></i> FreelanceHub
+            </a>
+            
+            <div class="flex items-center gap-6">
+                {% if not current_user.is_authenticated %}
+                <div class="hidden sm:flex items-center gap-4 mr-4">
+                    <a href="{{ url_for('index') }}#how-clients" class="navbar-link text-gray-700 hover:text-blue-600">How It Works (Clients)</a>
+                    <a href="{{ url_for('index') }}#how-freelancers" class="navbar-link text-gray-700 hover:text-blue-600">For Freelancers</a>
+                    <a href="{{ url_for('index') }}#features" class="navbar-link text-gray-700 hover:text-blue-600">Features</a>
+                    <a href="{{ url_for('index') }}#categories" class="navbar-link text-gray-700 hover:text-blue-600">Categories</a>
+                    <a href="{{ url_for('index') }}#testimonials" class="navbar-link text-gray-700 hover:text-blue-600">Testimonials</a>
+                    <a href="{{ url_for('index') }}#faqs" class="navbar-link text-gray-700 hover:text-blue-600">FAQs</a>
+                </div>
+                {% endif %}
+                {% if current_user.is_authenticated %}
+                    {% if current_user.is_freelancer() %}
+                        <a href="{{ url_for('freelancer_dashboard') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('browse_jobs') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-search"></i> Browse Jobs
+                        </a>
+                        <a href="{{ url_for('my_bids') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-list"></i> My Bids
+                        </a>
+                        <a href="{{ url_for('transactions') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-history"></i> Transactions
+                        </a>
+                        <a href="{{ url_for('profile') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    {% else %}
+                        <a href="{{ url_for('dashboard') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </a>
+                        <a href="{{ url_for('post_job') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-plus"></i> Post Job
+                        </a>
+                        <a href="{{ url_for('my_jobs') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-briefcase"></i> My Jobs
+                        </a>
+                        <a href="{{ url_for('transactions') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-history"></i> Transactions
+                        </a>
+                        <a href="{{ url_for('client_profile') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-user"></i> Profile
+                        </a>
+                    {% endif %}
+                    
+                    <div class="border-l pl-6">
+                        <span class="text-gray-700 mr-4">{{ current_user.name }}{% if current_user.role is defined %} ({{ current_user.role }}){% endif %}</span>
+                        <a href="{{ url_for('auth_logout') }}" class="text-red-600 hover:text-red-800">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                {% else %}
+                    <a href="{{ url_for('auth_login') }}" class="navbar-link text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{{ url_for('auth_register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mx-auto px-4 mt-6">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'error' if category == 'danger' else category }} mb-4 p-4 rounded-lg 
+                                {% if category == 'success' %}bg-green-50 text-green-700 border border-green-200
+                                {% elif category == 'danger' %}bg-red-50 text-red-700 border border-red-200
+                                {% elif category == 'warning' %}bg-yellow-50 text-yellow-700 border border-yellow-200
+                                {% else %}bg-blue-50 text-blue-700 border border-blue-200{% endif %}"
+                         role="alert">
+                        <div class="flex justify-between items-center">
+                            <span>{{ message }}</span>
+                            <button type="button" class="text-xl leading-none"
+                                    onclick="this.parentElement.parentElement.style.display='none'">
+                                &times;
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8 flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer (role-aware) -->
+    <footer class="bg-gray-900 text-gray-200 mt-16 py-10">
+        <div class="container mx-auto px-6">
+            <div class="md:flex md:justify-between md:items-start gap-8">
+                <div class="mb-6 md:mb-0">
+                    <a href="{{ url_for('index') }}" class="flex items-center gap-3 text-xl font-bold text-white">
+                        <span class="bg-blue-600 text-white rounded-full p-2"><i class="fas fa-briefcase"></i></span>
+                        FreelanceHub
+                    </a>
+                    <p class="text-sm text-gray-300 mt-3">Connecting clients with talented freelancers worldwide.</p>
+                </div>
+
+                {% if current_user.is_authenticated and current_user.is_freelancer() %}
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Freelancer Links</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ url_for('browse_jobs') }}" class="hover:text-white">Browse Jobs</a></li>
+                            <li><a href="{{ url_for('my_bids') }}" class="hover:text-white">My Bids</a></li>
+                            <li><a href="{{ url_for('profile') }}" class="hover:text-white">My Profile</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Support</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="hover:text-white">Help Center</a></li>
+                            <li><a href="#" class="hover:text-white">Contact Support</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% elif current_user.is_authenticated and current_user.is_client() %}
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Client Links</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ url_for('post_job') }}" class="hover:text-white">Post Job</a></li>
+                            <li><a href="{{ url_for('my_jobs') }}" class="hover:text-white">My Jobs</a></li>
+                            <li><a href="{{ url_for('client_profile') }}" class="hover:text-white">My Profile</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Billing</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ url_for('transactions') }}" class="hover:text-white">Transactions</a></li>
+                            <li><a href="#" class="hover:text-white">Invoices</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% else %}
+                <div class="grid grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">For Freelancers</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ url_for('browse_jobs') }}" class="hover:text-white">Browse Jobs</a></li>
+                            <li><a href="{{ url_for('auth_register') }}" class="hover:text-white">Register</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">For Clients</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="{{ url_for('post_job') }}" class="hover:text-white">Post Job</a></li>
+                            <li><a href="{{ url_for('auth_register') }}" class="hover:text-white">Hire Now</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-white font-semibold mb-3">Legal</h4>
+                        <ul class="space-y-2 text-sm">
+                            <li><a href="#" class="hover:text-white">Privacy Policy</a></li>
+                            <li><a href="#" class="hover:text-white">Terms of Service</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="border-t border-gray-800 mt-8 pt-6 text-center text-sm text-gray-400">
+                <p>&copy; 2026 FreelanceHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

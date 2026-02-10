@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - FreelanceHub{% endblock %}
+
+{% block content %}
+{% if profile is defined and profile %}
+<div class="grid md:grid-cols-3 gap-8">
+    <!-- Profile Form -->
+    <div class="md:col-span-2">
+        <div class="bg-white rounded-lg shadow-md p-8">
+            <h1 class="text-3xl font-bold mb-6">My Profile</h1>
+            
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Profile Picture</label>
+                    {% if profile.profile_image %}
+                        <div class="mb-4">
+                            <img src="{{ url_for('static', filename='../uploads/' + profile.profile_image) }}" 
+                                 onerror="this.src='https://via.placeholder.com/150'" 
+                                 class="w-24 h-24 rounded-full object-cover">
+                        </div>
+                    {% endif %}
+                    <input type="file" name="profile_image" accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg">
+                    <p class="text-sm text-gray-500 mt-1">Max 50MB</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+                    <input type="text" value="{{ current_user.name }}" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                    <input type="email" value="{{ current_user.email }}" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100">
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Bio</label>
+                    <textarea name="bio" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="Write about yourself, your experience, and expertise...">{{ profile.bio or '' }}</textarea>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Skills (comma-separated)</label>
+                    <input type="text" name="skills" value="{{ profile.skills or '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="e.g., Python, JavaScript, Web Design">
+                </div>
+                <div>
+                    <a href="{{ url_for('change_password') }}" class="text-sm text-blue-600 hover:underline">Change Password</a>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Portfolio Link</label>
+                    <input type="url" name="portfolio_link" value="{{ profile.portfolio_link or '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" placeholder="https://yourportfolio.com">
+                </div>
+
+                <button type="submit" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 w-full md:w-auto">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Profile Stats -->
+    <div class="space-y-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-bold mb-4">Profile Stats</h3>
+            <div class="space-y-4">
+                <div class="pb-4 border-b">
+                    <p class="text-gray-600 text-sm">Average Rating</p>
+                    <p class="text-3xl font-bold text-yellow-500">
+                        {% if profile.avg_rating %}
+                            ⭐ {{ "%.1f"|format(profile.avg_rating) }}
+                        {% else %}
+                            No ratings yet
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-gray-600 text-sm">Total Reviews</p>
+                    <p class="text-2xl font-bold">{{ profile.total_reviews }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% if reviews %}
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-xl font-bold mb-4">Recent Reviews</h3>
+                <div class="space-y-4">
+                        {% for review in reviews %}
+                        <div class="pb-4 border-b last:border-b-0">
+                            <div class="flex items-start gap-2 mb-2">
+                                <span class="text-yellow-500">
+                                    {% for i in range(review.rating) %}⭐{% endfor %}
+                                </span>
+                                <span class="text-sm text-gray-600">{{ review.created_at.strftime('%b %d, %Y') }}</span>
+                            </div>
+                            <p class="font-semibold">{{ review.client_reviewer.name }}</p>
+                            <p class="text-gray-600 text-sm">{{ review.comment }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="text-center py-12">
+    <p class="text-gray-600">Profile not found.</p>
+</div>
+{% endif %}
+{% endblock %}

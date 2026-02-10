@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Project custom fallback styles copied from previous static/css/styles.css */
+:root{
+  --bg:#f8fafc;--text:#111827;--muted:#6b7280;--blue:#3b82f6;
+}
+body{font-family:Segoe UI, Tahoma, Geneva, Verdana, sans-serif;margin:0}
+.container{max-width:1100px;margin:0 auto;padding:0 16px}
+
+/* small helpers preserved */
+.alert{padding:0.75rem;border-radius:8px}
+.footer{background:#111827;color:#d1d5db;padding:2rem;margin-top:2rem}

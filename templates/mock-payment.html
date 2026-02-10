@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Mock Payment - FreelanceHub{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <div class="text-center mb-8">
+            <div class="text-6xl mb-4">💳</div>
+            <h1 class="text-2xl font-bold">Complete Payment</h1>
+        </div>
+
+        {% if not payment %}
+            <div class="text-center py-8">
+                <p class="text-gray-600">Payment not found.</p>
+            </div>
+        {% else %}
+        <div class="bg-gray-50 p-6 rounded-lg mb-6 space-y-3">
+            <div class="flex justify-between">
+                <span class="text-gray-600">Job:</span>
+                <span class="font-semibold">{{ payment.job.title if payment.job else 'N/A' }}</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600">Freelancer:</span>
+                <span class="font-semibold">{{ payment.freelancer.name if payment.freelancer else 'N/A' }}</span>
+            </div>
+            <div class="border-t pt-3 flex justify-between">
+                <span class="text-gray-600 font-bold">Total Amount:</span>
+                <span class="text-2xl font-bold text-green-600">₹{{ "%.2f"|format(payment.amount if payment.amount else 0) }}</span>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <p class="text-yellow-700 text-sm">
+                <i class="fas fa-exclamation-triangle"></i> This is a demo payment. No actual transaction will occur.
+            </p>
+        </div>
+
+        <form method="POST" class="space-y-4">
+            <!-- Payment Method Selection -->
+            <div>
+                <label class="block text-gray-700 font-semibold mb-3">Select Payment Method</label>
+                <div class="space-y-3">
+                    <label class="flex items-center p-4 border-2 border-blue-300 rounded-lg cursor-pointer hover:bg-blue-50 transition" onclick="togglePaymentMethod('card')">
+                        <input type="radio" name="payment_method" value="card" checked class="w-4 h-4 text-blue-600">
+                        <div class="ml-4 flex-1">
+                            <span class="block font-semibold text-gray-800"><i class="fas fa-credit-card"></i> Credit/Debit Card</span>
+                            <span class="text-sm text-gray-600">Visa, Mastercard, Rupay</span>
+                        </div>
+                    </label>
+                    <label class="flex items-center p-4 border-2 border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition" onclick="togglePaymentMethod('upi')">
+                        <input type="radio" name="payment_method" value="upi" class="w-4 h-4 text-blue-600">
+                        <div class="ml-4 flex-1">
+                            <span class="block font-semibold text-gray-800"><i class="fas fa-mobile-alt"></i> UPI</span>
+                            <span class="text-sm text-gray-600">Google Pay, PhonePe, PayTM</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Card Payment Section -->
+            <div id="cardSection" class="space-y-4 bg-blue-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-700">Card Details</h3>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Card Number</label>
+                    <input type="text" value="4111 1111 1111 1111" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" placeholder="XXXX XXXX XXXX XXXX">
+                    <p class="text-gray-500 text-xs mt-1">Demo card (non-functional)</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Expiry</label>
+                        <input type="text" value="12/25" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">CVV</label>
+                        <input type="text" value="123" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100">
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPI Payment Section -->
+            <div id="upiSection" style="display:none;" class="space-y-4 bg-purple-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-700">UPI Details</h3>
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">UPI ID</label>
+                    <input type="text" value="user@googlepay" disabled class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-100" placeholder="user@upi">
+                    <p class="text-gray-500 text-xs mt-1">Demo UPI ID (non-functional)</p>
+                </div>
+                <div class="bg-white p-3 rounded border border-purple-200">
+                    <p class="text-sm text-gray-600"><i class="fas fa-info-circle"></i> You will be redirected to your UPI app to complete the payment.</p>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 transition">
+                <span id="submitText">Confirm Payment</span>
+            </button>
+            <a href="{% if payment %}{{ url_for('payment_page', job_id=payment.job_id) }}{% else %}# {% endif %}" class="block text-center text-gray-600 hover:text-gray-800">
+                Back
+            </a>
+        </form>
+    </div>
+</div>
+
+<script>
+function togglePaymentMethod(method) {
+    const cardSection = document.getElementById('cardSection');
+    const upiSection = document.getElementById('upiSection');
+    const submitText = document.getElementById('submitText');
+    const radios = document.querySelectorAll('input[name="payment_method"]');
+    
+    radios.forEach(radio => {
+        if (radio.value === method) {
+            radio.checked = true;
+            radio.parentElement.parentElement.classList.remove('border-gray-300');
+            radio.parentElement.parentElement.classList.add('border-blue-300');
+        } else {
+            radio.checked = false;
+            radio.parentElement.parentElement.classList.remove('border-blue-300');
+            radio.parentElement.parentElement.classList.add('border-gray-300');
+        }
+    });
+    
+    if (method === 'card') {
+        cardSection.style.display = 'block';
+        upiSection.style.display = 'none';
+        submitText.innerText = 'Confirm Payment';
+    } else {
+        cardSection.style.display = 'none';
+        upiSection.style.display = 'block';
+        submitText.innerText = 'Open UPI App';
+    }
+}
+</script>
+{% endblock %}
