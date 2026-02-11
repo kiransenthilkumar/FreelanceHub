@@ -50,27 +50,27 @@ def create_demo_data():
         jobs = []
         jobs_per_client = {
             0: [
-                ("Local Business Website", "Build a responsive website for a local business.", 1200, "web", 21),
-                ("Landing Page A/B Test", "Create 2 landing page variants for conversion testing.", 500, "design", 10),
-                ("SEO Basics", "On-page SEO fixes and basic optimization.", 600, "marketing", 14),
+                ("Local Business Website", "Build a responsive website for a local business.", 35000, "web", 21),
+                ("Landing Page A/B Test", "Create 2 landing page variants for conversion testing.", 7000, "design", 10),
+                ("SEO Basics", "On-page SEO fixes and basic optimization.", 9000, "marketing", 14),
             ],
             1: [
-                ("Product Upload & Optimization", "Upload and optimize 150 product listings.", 450, "data", 7),
-                ("4-week Social Campaign", "Create assets and copy for a 4-week campaign.", 800, "marketing", 21),
+                ("Product Upload & Optimization", "Upload and optimize 150 product listings.", 12000, "data", 7),
+                ("4-week Social Campaign", "Create assets and copy for a 4-week campaign.", 22000, "marketing", 21),
             ],
             2: [
-                ("Company Blog Setup", "Setup blog with templates and initial 5 posts.", 500, "writing", 14),
-                ("Product Photography Edit", "Edit and optimize 50 product photos.", 350, "design", 12),
-                ("Content Calendar", "Create a 3-month content calendar and briefs.", 300, "writing", 10),
+                ("Company Blog Setup", "Setup blog with templates and initial 5 posts.", 15000, "writing", 14),
+                ("Product Photography Edit", "Edit and optimize 50 product photos.", 10000, "design", 12),
+                ("Content Calendar", "Create a 3-month content calendar and briefs.", 8000, "writing", 10),
             ],
             3: [
-                ("CRM Integration", "Integrate CRM with contact forms and workflows.", 1200, "web", 20),
-                ("Dashboard Analytics", "Build dashboard to surface key metrics.", 1500, "web", 28),
+                ("CRM Integration", "Integrate CRM with contact forms and workflows.", 40000, "web", 20),
+                ("Dashboard Analytics", "Build dashboard to surface key metrics.", 45000, "web", 28),
             ],
             4: [
-                ("Brand Guidelines", "Create simple brand guidelines and color palette.", 300, "design", 9),
-                ("Ad Banner Set", "Design 10 ad banners in multiple sizes.", 250, "design", 6),
-                ("Packaging Mockups", "Create 3 packaging mockups for product line.", 400, "design", 11),
+                ("Brand Guidelines", "Create simple brand guidelines and color palette.", 9000, "design", 9),
+                ("Ad Banner Set", "Design 10 ad banners in multiple sizes.", 5000, "design", 6),
+                ("Packaging Mockups", "Create 3 packaging mockups for product line.", 15000, "design", 11),
             ],
         }
 
