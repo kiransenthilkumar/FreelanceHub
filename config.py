@@ -1,16 +1,10 @@
 import os
 from datetime import timedelta
-from pathlib import Path
 
 class Config:
     """Base configuration"""
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'dev-secret-key-change-in-production'
-    
-    # Use SQLite with proper path for Render (ephemeral filesystem)
-    # Data persists only within a single dyno instance; restarts will lose data
-    basedir = os.path.abspath(os.path.dirname(__file__))
-    db_path = os.path.join(basedir, 'instance', 'freelancing.db')
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + db_path
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///freelancing.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
     # Session config
